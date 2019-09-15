@@ -8,32 +8,22 @@
     function Service($http, $q) {
         var service = {};
 
-        service.GetCurrent = GetCurrent;
-        service.GetAll = GetAll;
-        service.GetById = GetById;
+        service.GetList = GetList;
         service.Create = Create;
         service.Delete = Delete;
 
         return service;
 
-        function GetCurrent() {
-            return $http.get('/api/questions/current').then(handleSuccess, handleError);
+        function GetList(user) {
+            
+            return $http.get('/api/questions/list/' + user._id).then(handleSuccess, handleError);
         }
-
-        function GetAll() {
-            return $http.get('/api/questions').then(handleSuccess, handleError);
-        }
-
-        function GetById(_id) {
-            return $http.get('/api/questions/' + _id).then(handleSuccess, handleError);
-        }
-
         function Create(questions) {
             return $http.post('/api/questions/register', questions).then(handleSuccess, handleError);
         }
 
-        function Delete(_id) {
-            return $http.delete('/api/questions/' + _id).then(handleSuccess, handleError);
+        function Delete(Pergunta) {
+            return $http.delete('/api/questions/delete/' + Pergunta._id ).then(handleSuccess, handleError);
         }
 
         // private functions

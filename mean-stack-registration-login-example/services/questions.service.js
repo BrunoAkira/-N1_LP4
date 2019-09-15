@@ -11,34 +11,44 @@ var service = {};
 
 
 service.create = createQuestions;
-//service.delete = _delete;
+service.getlist = getlist;
+service.delete = deleteQuestions;
 
 module.exports = service;
+function getlist(user)
+{
+    var deferred = Q.defer();
+    let query = {
+        userid: user
+    }
+    db.questions.find(query).toArray(function (err, doc)
+    {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+        deferred.resolve(doc);
+    }
+    )
+    return deferred.promise;
+}
 
 
  function createQuestions(questions) 
     {
-        // set user object to userParam without the cleartext password
-        //var user = _.omit(userParam, 'password');
-
-        // add hashed password to user object
-        //user.hash = bcrypt.hashSync(userParam.password, 10);
-
-        // db.questions.insert(
-        //     questions,
-        //     function (err, doc) {
-        //         if (err) deferred.reject(err.name + ': ' + err.message);
-
-        //         deferred.resolve();
-        //     });
+        var deferred = Q.defer();
+         db.questions.insert( questions, function (err, doc) 
+         {
+                if (err) deferred.reject(err.name + ': ' + err.message);
+                 deferred.resolve();
+         }
+         );
+         return deferred.promise;
     }
 
 
-function _delete(_id) {
+function deleteQuestions(PerguntaID) {
     var deferred = Q.defer();
-
     db.questions.remove(
-        { _id: mongo.helper.toObjectID(_id) },
+        { _id: mongo.helper.toObjectID(PerguntaID)
+         },
         function (err) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 

@@ -10,6 +10,7 @@
 
         vm.questions = null;
         vm.saveQuestions = saveQuestions;
+        vm.listquestions=null;
         vm.deleteQuestions = deleteQuestions;
 
         initController();
@@ -18,33 +19,43 @@
             // get current user
             UserService.GetCurrent().then(function (user) {
                 vm.user = user;
+                UpdatePage();
             });
+        
+        }
+        function UpdatePage()
+        {
+            QuestionService.GetList(vm.user).then(function(questions)
+            {
+                vm.listquestions = questions;
+            })
         }
 
         function saveQuestions() {
             let question = {
-                question: vm.questions
+                question: vm.questions,
+                userid: vm.user._id
             };
             QuestionService.Create(question)
                 .then(function () {
+                    
                     FlashService.Success('Questions created');
+                    UpdatePage();
                 })
                 .catch(function (error) {
                     FlashService.Error(error);
                 });
-        }
+            }
 
-       /* function deleteQuestions() {
-            UserService.Delete(vm.user._id)
+       function deleteQuestions(Pergunta) {
+            QuestionService.Delete(Pergunta)
                 .then(function () {
-                    // log user out
-                    $window.location = '/login';
+                    UpdatePage();
                 })
                 .catch(function (error) {
                     FlashService.Error(error);
                 });
         }
-        */
     }
 
 })();
